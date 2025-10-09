@@ -91,7 +91,7 @@ This lab assumes you have:
 
     ![Screenshot showing the third question for the agent](./images/send-third-question.jpg)
 
-1. As you can see, the response included the title and description for the two tickets assigned to Emily Chen.
+1. As you can see, the response included the title and description for the tickets assigned to Emily Chen.
 
     ![Screenshot showing the third question for the agent](./images/third-question-response.jpg)
 

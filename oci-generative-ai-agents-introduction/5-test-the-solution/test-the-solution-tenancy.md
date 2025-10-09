@@ -38,7 +38,7 @@ This lab assumes you have:
 
     ![Screenshot showing the agent details page with the launch chat button highlighted](./images/launch-chat-button.jpg)
 
-1. In the chat page, on th left, make sure sure that both the **Agent compartment** and the **Agent endpoint compartment** are set to the **root** compartment.
+1. In the chat page, on the left, make sure that both the **Agent compartment** and the **Agent endpoint compartment** are set to the **root** compartment.
 
 1. On the top of the page, the **Agent** drop down should show **customer support agent** and the **Agent endpoint** drop down should show the newly created endpoint.
 1. In the chat window, you'll be able to see the greeting message we have configured for the agent.
@@ -91,7 +91,7 @@ This lab assumes you have:
 
     ![Screenshot showing the third question for the agent](./images/send-third-question.jpg)
 
-1. As you can see, the response included the title and description for the two tickets assigned to Emily Chen.
+1. As you can see, the response included the title and description for the tickets assigned to Emily Chen.
 
     ![Screenshot showing the third question for the agent](./images/third-question-response.jpg)
 
