@@ -36,8 +36,9 @@ TOOL = {
 
 
 def responses_client(config):
+    region = config['region']
     return OpenAI(
-        base_url=f"https://inference.generativeai.{config['region']}.oci.oraclecloud.com/openai/v1",
+        base_url=f"https://inference.generativeai.{region}.oci.oraclecloud.com/openai/v1",
         api_key='not-used', project=config['project_id'],
         http_client=httpx.Client(auth=CloudShellAuth()), timeout=120, max_retries=0)
 
