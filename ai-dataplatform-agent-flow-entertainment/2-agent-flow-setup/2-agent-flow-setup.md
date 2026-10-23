@@ -1,0 +1,516 @@
+# Lab 2: Agent Flow Setup
+
+## Introduction
+
+With the data environment in place — a Knowledge Base for RAG and Oracle AI Database tables for SQL — it's time to build the agent itself. In this lab, you'll use the AI Compute from Lab 1, design the agent flow on the visual canvas, configure the Executor Agent node with detailed instructions, and wire up all the tools: one RAG tool connected to the Knowledge Base and four SQL tools that query box office and streaming data.
+
+By the end of this lab, you'll have a fully configured Entertainment Release & Performance Analyst Agent ready for testing.
+
+**Estimated Time:** 25 Minutes
+
+### Objectives
+
+In this lab you will:
+
+1. Create an agent flow and attach it to the AI Compute instance
+2. Configure the Executor Agent node with a model and detailed agent instructions
+3. Add a RAG tool connected to the Knowledge Base you created in Lab 1
+4. Add four SQL tools that query box office and streaming data from the Oracle AI Database
+
+### Prerequisites
+
+This lab assumes you have:
+
+* Completed Lab 1 (Data Environment Setup)
+* An AI Compute (`ent_compute`) in Active status
+* A Knowledge Base (`ent_kb`) in Active status with documents ingested
+* Access to the Oracle AI Database with entertainment performance tables
+* Have the [Entertainment agent instructions](../files/agent_instructions.txt) available; this is a separate file from the three-document Knowledge Base archive.
+
+## Task 1: Create the Agent Flow
+
+With the AI Compute instance created in Lab 1 (should be **Active** now), you can now create the agent flow — the visual canvas where you design the agent's behavior, tools, and configuration.
+
+1. Navigate to your workspace and click **Agents**. Click **Create** or the **+** button to open **Create Agent project**.
+
+2. Keep **Visual builder** selected as the **Agent authoring mode**, then enter a name and description:
+
+    **Name**
+    ```
+    <copy>
+    ent_agent_flow
+    </copy>
+    ```
+    
+    **Description**
+    ```
+    <copy>
+    This is an internal analytics and decision-support agent for an entertainment studio or streaming platform.
+    </copy>
+    ```
+
+    ![Create dialogue for new Agent Flow](images/02-agent-flows-create.png " ")
+
+3. Click **Create**. You will be directed to the **agent flow canvas** — a visual design environment where you'll drag and configure Executor Agent nodes and tools.
+
+4. Above the canvas, open **Select Playground AI Compute** using the dropdown at the right of the Development/Playground toolbar. Under **Active AI compute**, select **`ent_compute`**, then click **Select**. Confirm the toolbar shows **ent_compute (ACTIVE)**.
+
+    > **Note:** The optional AI Compute field in the create dialog may be disabled for Visual builder. Select the Playground compute after the flow opens. Production deployment selects its compute separately in Lab 4.
+
+
+## Task 2: Add the Chat Trigger and Configure the Executor Agent
+
+The Executor Agent node is the core of your flow. It defines the LLM model, the system instructions that govern the agent's behavior, and the reasoning approach.
+
+1. Drag a **Chat Trigger** onto the blank canvas and place it on the left. Drag an **Executor Agent** to its right, leaving space between the nodes. Drag from the Chat Trigger connector to the Executor Agent and release to connect them. Click the agent frame to configure it. The Chat Trigger starts Playground and deployed conversations.
+
+2. Click the *Agent Name* and *Agent Description* in the drawer window to edit both. Select the generated node name before typing so your new value replaces it instead of appending to it. Press **Enter** to save each inline edit; the adjacent cancel icon discards it.
+
+    ![Change the agent flow name](images/02-agent-flows-change-name.png " ")
+
+    **Name**
+    ```
+    <copy>
+    Analyst_Agent
+    </copy>
+    ```
+
+    ![Change the agent flow description](images/02-agent-flows-change-description.png " ")
+    
+    **Description**
+    ```
+    <copy>
+    This is an internal analytics and decision-support agent for an entertainment studio or streaming platform.
+    </copy>
+    ```
+
+3. In the **Configuration** tab, set the following:
+
+    **Region**
+
+    For the **Region**, select the region corresponding to the **Generative AI Endpoint Region** in the **View Login Info**: 
+
+    ![Select Generative AI Endpoint Region](images/02-agent-flows-select-llm-region.png " ")
+
+    **Model** 
+
+    Select an available reasoning model in the assigned Generative AI region. The existing examples use `xai.grok-4.20-reasoning`; use it only if your environment offers it.
+
+    > **Note:** Model availability can vary by reservation. If that example is unavailable, select the reasoning model confirmed by your facilitator for this event. Do not change regions arbitrarily; model access and allowed regions depend on the event environment.
+
+
+4. Open the **Agent instructions** tab. Click the instructional placeholder text to activate the editable field. You'll need the detailed instructions that define the agent's behavior, reasoning flow, and response style. These instructions tell the agent:
+
+    - Its role (internal analytics and decision-support for entertainment teams)
+    - When to use RAG vs. SQL tools
+    - The reasoning sequence: classify the question → retrieve knowledge → query data → synthesize → respond
+    - Response style guidelines (concise, analytical, structured)
+    - What it must NOT do (no guessing metrics, no bypassing SQL tools, no fabricating data)
+
+5. Copy the following agent instructions into the **Agent instructions** field, replacing the placeholder content. Click another tab when finished to leave the editor.
+
+    ```
+    <copy>
+    You are an internal analytics and decision-support agent for an entertainment studio or streaming platform.
+    Your primary objective is to help content strategy, release operations, marketing, and finance teams understand box office performance, streaming engagement, and release effectiveness using a combination of:
+
+    * Retrieval-Augmented Generation (RAG) over internal playbooks and policies
+    * Strictly defined SQL tools that execute parameterized, read-only queries
+
+    You are not a customer support agent. You do not respond to end-user complaints, troubleshooting, or account issues.
+
+    You have access to the following authoritative internal documents via a RAG tool:
+    * Content Strategy & Release Operations Playbook
+    * Marketing Measurement & Attribution Guidelines
+    * Distribution Window & Territory Rules
+
+    These documents define:
+
+    * Metric definitions (e.g., completion rate, ROI)
+    * Decision frameworks (e.g., green/yellow/red signals)
+    * Release windows and territorial constraints
+    * Attribution logic and interpretation rules
+
+    If a question involves definitions, policies, thresholds, or interpretation, you must consult the RAG tool before answering. 
+
+    In addition, you have access to data via SQL tools. You can query performance data only through the provided SQL tools.
+
+    Each SQL tool:
+    * Executes one pre-defined parameterized query
+    * Is read-only
+    * Must be used exactly as defined (no query rewriting)
+
+    You must:
+
+    1. Identify which tool(s) are relevant
+    2. Populate the required parameters from the user’s question
+    3. Call the tool(s)
+    4. Interpret the results in business language
+
+    Never invent data or estimate metrics that are not returned by a tool.
+
+    Reasoning and Tool-Use flow: 
+
+    For every user question, follow this sequence:
+
+    1. Classify the question
+    * Definitions / policy → RAG required
+    * Performance metrics → SQL tool required
+    * Interpretation → RAG + SQL
+
+    2. Retrieve knowledge if needed
+    * Use RAG to fetch relevant guidance or definitions
+    * Quote or paraphrase faithfully
+
+    3. Query data
+    * Call the appropriate SQL tool(s)
+    * Validate parameters (sample dates, market and region codes, and title IDs)
+
+    4. Synthesize
+    * Combine retrieved policy context with factual results
+    * Highlight trends, risks, or opportunities
+
+    5. Respond
+    * Clear summary
+    * Key metrics
+    * Interpretation grounded in internal guidelines
+    * Optional follow-up questions or next analyses
+
+
+    Response Style Guidelines 
+    * Be concise, analytical, and structured
+    * Use bullet points and short sections
+    * Clearly separate facts, interpretation, and recommendations
+    * Use internal terminology as defined in the RAG documents
+    * If data is missing or inconclusive, say so explicitly
+
+    What you Must NOT do 
+    * Do not provide customer support or end-user guidance
+    * Do not guess or fabricate metrics
+    * Do not bypass SQL tools to answer data questions
+    * Do not override or reinterpret official definitions from RAG content
+    * Do not expose raw SQL or internal schema unless explicitly requested
+
+    Workshop data and tool boundaries:
+    * The four SQL tools are get_box_office_weekend, get_streaming_trend, get_title_id, and get_market_code.
+    * Marketing definitions are available through RAG, but no campaign or ROI SQL tool is configured. Explain this limitation rather than claiming access to marketing metrics.
+    * This is fictional historical sample data. Use the dates returned by SQL. "Latest available" means latest in the returned dataset, never the current calendar date.
+    * Resolve names with get_title_id and markets with get_market_code. For an initial box-office query with no market, use US and state that choice. Preserve titles on a market follow-up.
+    * Completion rates are fractions: 0.44 means 44 percent. Do not confuse starts with completion or infer causality from a trend.
+    * Compare matching dates for cross-title analysis. Flag missing weeks rather than treating nonconsecutive records as consecutive weeks.
+    * Use only thresholds found in the retrieved documents. If green/yellow/red bands or genre benchmarks are not specified, say so; do not invent them.
+    * Escalation below 45 percent requires two consecutive weeks in a top-three region. Treat top-three status as a condition unless the user supplies it or a tool establishes it.
+    </copy>
+    ```
+
+    ![Agent configuration dialog with all parameters entered](images/02-agent-flows-create-agent-details.png " ")
+
+6. Leave **Model parameters** in the **Configuration** tab at their defaults. Leave **Context** and **Skills** unchanged for this workshop.
+
+7. The **Agent flows** canvas auto-saves your input as you work. Now you're ready to move to the next task.
+
+## Task 3: Add the RAG Tool
+
+The RAG tool connects the agent to the Knowledge Base you created in Lab 1. When users ask about definitions, policies, thresholds, or interpretation rules, the agent uses this tool to retrieve relevant passages from the internal documents.
+
+1. Drag a **RAG tool** onto the canvas. Hover near **Tools (#)** on the Executor Agent until its circular connector appears. Drag from that connector to the RAG tool and release. Leave space between the nodes; adding a tool does not automatically connect it.
+
+    ![Agent flows canvas - attach RAG tool](images/02-agent-flows-attach-rag.png " ")
+
+2. Enter a name:
+
+    **Name**
+    ```
+    <copy>
+    internal_knowledge_sources_rag
+    </copy>
+    ```
+
+    > **Note:** As with the Executor Agent node, select the generated tool name before typing so the new name replaces the default value.
+    
+3. In **Configuration**, select `ent_std_catalog.default.ent_kb`. If the RAG tool exposes response-model Region and Model fields, use the same approved region and model as the Executor Agent. Keep `{{query}}` as the query placeholder.
+
+    ![RAG tool configuration - select knowledge base](images/02-agent-flows-rag-select-kbase.png " ")
+
+4. Enter a description. The **`Description`** field may come pre-populated with instructions on how to use the field. Delete the placeholder contents before pasting the description below.
+
+    **Description**
+    ```
+    <copy>
+    Agent has access to the following authoritative internal documents via a RAG tool: 
+        - Content Strategy & Release Operations Playbook
+        - Marketing Measurement & Attribution Guidelines
+        - Distribution Window & Territory Rules
+    </copy>
+    ```
+
+5. Set the document retrieval limit to **3**. This is the number of chunks returned by the Knowledge Base for each query.
+
+6. Leave the **Query** field intact.
+
+7. Optionally, click the **Test** tab to verify the RAG tool is working. Enter the following test query and click **[Submit]**:
+
+    ```
+    <copy>
+    Territory priorities for releases
+    </copy>
+    ```
+
+8. Confirm the response is grounded in the release playbook documents. If the optional standalone tool test does not display output, record that behavior and validate retrieval through the Playground in Lab 3. If the tool reports an error, fix ingestion or configuration before continuing.
+
+    ![Screenshot showing rag tool validation](images/02-agent-flows-validate-rag.png " ")
+
+## Task 4: Add the SQL Tools — Box Office and Streaming
+
+Now we'll add the SQL tools. Each SQL tool executes a single, pre-defined, parameterized query against the Oracle AI Database. The agent selects which tool to call based on the user's question and populates the parameters automatically.
+
+For each SQL tool below, select the generated tool name before typing the new name and press **Enter** to save. Select **`ent_ext_catalog`** in **External catalog**, then **`entertainment`** in **Schema**.
+
+### Tool 1: Get box office weekend data
+
+This tool returns weekend theatrical performance for a title in a given market.
+
+1. Drag a **SQL tool** onto the canvas. Connect it immediately by dragging from the Executor Agent **Tools (#)** connector to the new tool. Leave **Oracle SQL** selected.
+
+2. Enter the name
+
+    **Name**
+    ```
+    <copy>
+    get_box_office_weekend
+    </copy>
+    ```
+    
+3. In **External catalog**, select **`ent_ext_catalog`**. Then select **`entertainment`** in the **Schema** dropdown.
+
+    ![External catalog and Schema dropdowns](images/02-sql-catalog-schema-live.png " ")
+
+4. Enter a description. The **`Description`** field may come pre-populated with instructions on how to use the field. Delete the placeholder contents before pasting the description below.
+
+    **Description**
+    ```
+    <copy>
+    Weekend theatrical performance for a title in a market.
+    </copy>
+    ```
+    
+5. Enter the following SQL query:
+
+    ```sql
+    <copy>
+    SELECT
+      t.title_name,
+      b.weekend_end_date,
+      b.market_code,
+      b.gross_usd_m,
+      b.screens,
+      b.rank
+    FROM box_office_weekend b
+    JOIN titles t ON t.title_id = b.title_id
+    WHERE b.title_id = {{title_id}}
+      AND b.market_code = {{market_code}}
+    ORDER BY b.weekend_end_date ASC
+    </copy>
+    ```
+
+6. The parameters `{{title_id}}` and `{{market_code}}` will appear in the right panel under **AI Tool Definition**. Enter descriptions for each:
+
+    
+    **{{title_id}}**
+    ```
+    <copy>
+    The title ID of the movie. For example, T1002. If you are unsure, use the tool get_title_id. The last option is to ask the user.
+    </copy>
+    ```
+
+    **{{market_code}}**
+    ```
+    <copy>
+    Market code is a two letter code representing the country or region where the movie is released. These are documented in our internal policy documents. An example is Japan being JP.
+    </copy>
+    ```
+
+    ![AI Tool definition Name, Type and Description fields](images/02-sql-parameters-live.png " ")
+
+7. Optionally, click the **Test** tab and assign values to validate:
+
+    **title_id**
+    ```
+    <copy>T1001</copy>
+    ```
+
+    **market_code**
+    ```
+    <copy>US</copy>
+    ```
+
+    You should see two rows for Skyline Heist on 2025-09-14 and 2025-09-21.
+
+    ![Screenshot depicting test results](images/02-agent-flows-sql-test-tool.png " ")
+
+### Tool 2: Get streaming trend data
+
+This tool returns weekly streaming health metrics (starts, hours, completion rate) for a title in a region.
+
+1. Drag another **SQL tool** onto the canvas and connect it from the Executor Agent **Tools (#)** connector. Leave **Oracle SQL** selected.
+
+2. Enter the name. 
+
+    **Name**
+    ```
+    <copy>
+    get_streaming_trend
+    </copy>
+    ```
+
+3. In **External catalog**, select **`ent_ext_catalog`**. Then select **`entertainment`** in the **Schema** dropdown.
+
+    ![External catalog and Schema dropdowns](images/02-sql-catalog-schema-live.png " ")
+
+4. Enter the description. The **`Description`** field may come pre-populated with instructions on how to use the field. Delete the placeholder contents before pasting the description below.
+
+    **Description**
+    ```
+    <copy>
+    Weekly streaming health trend (starts, hours, completion) for a title in a region.
+    </copy>
+    ```
+    
+5. Enter the following SQL query:
+
+    ```sql
+    <copy>
+    SELECT
+      t.title_name,
+      s.week_start_date,
+      s.region_code,
+      s.starts,
+      s.hours_streamed_k,
+      s.completion_rate
+    FROM streaming_weekly s
+    JOIN titles t ON t.title_id = s.title_id
+    WHERE s.title_id = {{title_id}}
+      AND s.region_code = {{region_code}}
+    ORDER BY s.week_start_date ASC
+    </copy>
+    ```
+
+6. Enter parameter descriptions:
+
+    **{{title_id}}**
+    ```
+    <copy>
+    The title ID of the movie. For example, T1002. If you are unsure, use the tool get_title_id. The last option is to ask the user.
+    </copy>
+    ```
+
+    **{{region_code}}**
+    ```
+    <copy>
+    A two letter code representing the title's streaming region. Resolve it using get_market_code. These are documented in our internal policy documents. An example is Japan being JP.
+    </copy>
+    ```
+
+## Task 5: Add the SQL Tools — Reference Lookups
+
+These tools provide reference data that helps the agent resolve IDs and codes when users ask questions using title names, market names, or campaign names instead of IDs.
+
+### Tool 3: Get title id
+
+1. Drag a **SQL tool** onto the canvas. Connect it immediately by dragging from the Executor Agent **Tools (#)** connector to the new tool. Leave **Oracle SQL** selected.
+
+2. Enter the name: 
+
+    **Name**
+    ```
+    <copy>
+    get_title_id
+    </copy>
+    ```
+
+3. In **External catalog**, select **`ent_ext_catalog`**. Then select **`entertainment`** in the **Schema** dropdown.
+
+    ![External catalog and Schema dropdowns](images/02-sql-catalog-schema-live.png " ")
+
+4. Enter the description. The **`Description`** field may come pre-populated with instructions on how to use the field. Delete the placeholder contents before pasting the description below.
+
+    **Description**
+    ```
+    <copy>
+    This tool returns a table of all title IDs and title names.
+    </copy>
+    ```
+    
+5. Enter the following SQL query:
+
+    ```sql
+    <copy>
+    SELECT title_id, title_name, title_type, genre FROM titles ORDER BY title_name
+    </copy>
+    ```
+
+6. This tool has **no parameters**.
+
+### Tool 4: Get market code
+
+1. Drag a **SQL tool** onto the canvas. Connect it immediately by dragging from the Executor Agent **Tools (#)** connector to the new tool. Leave **Oracle SQL** selected.
+
+2. Enter the name:
+
+    **Name**
+    ```
+    <copy>
+    get_market_code
+    </copy>
+    ```
+    
+3. In **External catalog**, select **`ent_ext_catalog`**. Then select **`entertainment`** in the **Schema** dropdown.
+
+    ![External catalog and Schema dropdowns](images/02-sql-catalog-schema-live.png " ")
+
+4. Enter the description. The **`Description`** field may come pre-populated with instructions on how to use the field. Delete the placeholder contents before pasting the description below.
+
+    **Description**
+    ```
+    <copy>
+    Returns a table of market codes alongside market names and currency.
+    </copy>
+    ```
+    
+5. Enter the following SQL query:
+
+    ```sql
+    <copy>
+    SELECT market_code, market_name, currency FROM markets ORDER BY market_code
+    </copy>
+    ```
+
+6. This tool has **no parameters**.
+
+
+Before leaving the canvas, confirm **Chat Trigger -> Analyst_Agent**, five connected tools (one RAG plus four SQL), and **ent_compute** attached. Check every connector; an unconnected node is not available to the agent.
+
+## Lab 2 Recap
+
+![Completed agent with Chat Trigger, one RAG tool and four connected SQL tools](images/02-agent-complete-live.png " ")
+
+In this lab, you built the complete agent flow for the Entertainment Release & Performance Analyst:
+
+- You created the **agent flow** on the visual canvas and attached it to the AI Compute.
+- You configured the **Executor Agent node** with the available reasoning model selected for the event, and detailed instructions that define the agent's reasoning flow, response style, and behavioral guardrails.
+- You added a **RAG tool** connected to the Knowledge Base containing release playbooks and strategy documents.
+- You added **four SQL tools** covering box office performance, streaming health, and reference lookups for titles and markets.
+
+The agent now has everything it needs: a brain (the LLM), internal knowledge (RAG), and structured data access (SQL). In the next lab, you'll test it in the Playground.
+
+## Learn More
+
+* [Oracle AI Data Platform — Sample Agent Flows on GitHub](https://github.com/oracle-samples/oracle-aidp-samples/tree/main/ai/agent-flows)
+* [Build Your Agentic Solution Using Oracle Autonomous AI Database Select AI Agent — Oracle Blog](https://blogs.oracle.com/machinelearning/build-your-agentic-solution-using-oracle-adb-select-ai-agent)
+* [Oracle AI Data Platform — Documentation](https://docs.oracle.com/en/cloud/paas/ai-data-platform/)
+
+## Acknowledgements
+
+* **Author(s)** - Jean-Rene Gauthier [AIDP]
+* **Contributors** - Eli Schilling - Cloud Architect, Gareth Nathan - SDE, GenAI
+* **Last Updated By/Date** - Eli Schilling, October 2026

@@ -1,0 +1,59 @@
+# Test with LangGraph
+
+## Introduction
+In this lab, you will test the installation using LangGraph.
+
+Estimated time: 10 min
+
+### Objectives
+
+- Test the program using a LangGraph user interface.
+
+### Prerequisites
+- The lab 2 must have been completed.
+
+## Task 1: Test 
+
+2. Check the URL at the end of the Terraform run.
+
+3. Go to the URL of the application (e.g., https://xxxx.apigateway.eu-frankfurt-1.oci.customer-oci.com/xxxx/chat.html).
+
+4. Type "what is jazz" and press Enter.
+
+    ![Jazz](../0-intro/images/langgraph-jazz.png)    
+
+4. Type "what is Oracle Analytics Cloud" and press Enter.
+
+    Click on the link.
+    ![Analytics](images/langgraph-analytics.png)    
+
+5. Type "List the countries in the map of Brazil" and press Enter.
+
+6. Try more questions:
+
+    | File type | Extension | Question                                          |
+    | ----------| --------- | ------------------------------------------------- |
+    | PDF       | .pdf      | When was jazz created ?                           |
+    |           |           | What is Document Understanding                    |
+    | Word      | .docx     | What is OCI ?                                     |
+    | Image     | .png      | List the countries in the map of Brazil.          |
+    | Website   | .sitemap  | What is Digital Assistant ?                       |
+    | Website   | .crawler  | What can I see in France ?                        |
+    | FAX       | .tif      | Is there an invoice for Optika ?                  | 
+    |           |           | What does the file invoice.tif contain?           |
+    | Video     | .mp4      | What is Oracle Analytics                          | 
+    | Audio     | .mp3      | What is the issue with my headphones ?            | 
+
+**You may now proceed to the [next lab.](#next)**
+
+## Known issues
+
+None
+
+## Acknowledgements
+
+- **Author**
+    - Marc Gueury, Generative AI Specialist
+    - Maurits Dijkens, Generative AI Specialist
+    - Ras Alungei, Generative AI Specialist
+
