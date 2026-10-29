@@ -7,6 +7,10 @@
       "filename": "../../introduction/introduction.md"
     },
     {
+      "title": "Get Started",
+      "filename": "https://oracle-livelabs.github.io/common/labs/cloud-login/cloud-login.md"
+    },
+    {
       "title": "Lab 1: Setup",
       "filename": "../../setup/setup.md"
     },
@@ -21,6 +25,10 @@
     {
       "title": "Lab 4: Publish a sandbox application and access it from your browser (optional)",
       "filename": "../../publish/publish.md"
+    },
+    {
+      "title": "Need Help?",
+      "filename": "https://oracle-livelabs.github.io/common/labs/need-help/need-help-freetier.md"
     }
   ]
 }

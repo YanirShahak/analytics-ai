@@ -13,6 +13,11 @@ Complete this setup once to prepare the environment you will reuse throughout th
 
 Estimated Time: 30 minutes.
 
+### Prerequisites
+
+* Administrator access to your OCI tenancy to configure the workshop permissions.
+* Access to OCI Cloud Shell and its public network.
+
 ## Task 1: Select a region and compartment
 
 1. The OCI Responses API exercises use **OpenAI gpt-oss-120b**, with the model ID `openai.gpt-oss-120b`, in on-demand mode. Open Oracle's [Models by Region table](https://docs.oracle.com/en-us/iaas/Content/generative-ai/model-endpoint-regions.htm), find the **OpenAI gpt-oss-120b** row, and choose a region with on-demand availability, such as **US Midwest (Chicago)** (`us-chicago-1`).
@@ -25,7 +30,7 @@ Estimated Time: 30 minutes.
 
 2. Open the navigation menu and select **Identity & Security → Compartments**. A compartment groups the OCI resources you will create during the workshop.
 
-    ![Compartments in the Identity & Security menu](images/compartment-navigation.png)
+    ![Compartments in the Identity & Security menu](https://oracle-livelabs.github.io/common/images/console/id-compartment.png)
 
     If you already have a compartment you want to use, note its name and skip the remaining steps in this task.
 
@@ -64,6 +69,7 @@ Estimated Time: 30 minutes.
     | Models | List available models when selecting the compaction model (`inspect generative-ai-model`). | Workshop compartment. |
     | Sandboxes | Create and delete sandboxes, run commands, and transfer files. | Workshop compartment. |
     | OCI Responses API | Send requests to `openai.gpt-oss-120b` and return tool results to complete a response. | Compartment containing the workshop project. |
+    | Conversations | Create and retain conversation context across model requests (`manage generative-ai-conversation`). | Workshop compartment. |
     | Object Storage | Create and view buckets, list objects, and upload or replace the sample CSV. | Workshop compartment. |
 
     Cloud Shell requires tenancy-level grants. Scope access to the workshop resources to their compartment.
@@ -72,7 +78,7 @@ Estimated Time: 30 minutes.
 
 3. To grant access to other users, open **Identity & Security → Domains**.
 
-    ![Domains in the Identity & Security menu](images/domains-menu.png)
+    ![Domains in the Identity & Security menu](https://oracle-livelabs.github.io/common/images/console/id-domains.png)
 
     Click the identity domain containing the workshop users.
 
@@ -104,7 +110,7 @@ Estimated Time: 30 minutes.
 
 4. Open **Identity & Security → Compartments** and click your workshop compartment.
 
-    ![Compartments in the Identity & Security menu](images/compartments-menu.png)
+    ![Compartments in the Identity & Security menu](https://oracle-livelabs.github.io/common/images/console/id-compartment.png)
 
     ![Workshop compartment in the Compartments list](images/select-compartment.png)
 
@@ -121,7 +127,7 @@ Estimated Time: 30 minutes.
 
 5. Open **Identity & Security → Policies**, select the tenancy's **root compartment** in the compartment selector, and click **Create Policy**.
 
-    ![Policies in the Identity & Security menu](images/policies-menu.png)
+    ![Policies in the Identity & Security menu](https://oracle-livelabs.github.io/common/images/console/id-policies.png)
 
     ![Policies page with the root compartment selected and Create Policy button](images/policies-navigation.png)
 
@@ -144,17 +150,18 @@ Estimated Time: 30 minutes.
     Allow group id <group-ocid> to manage generative-ai-project in compartment id <compartment-ocid>
     Allow group id <group-ocid> to manage generative-ai-sandbox in compartment id <compartment-ocid>
     Allow group id <group-ocid> to manage generative-ai-response in compartment id <compartment-ocid>
+    Allow group id <group-ocid> to manage generative-ai-conversation in compartment id <compartment-ocid>
     Allow group id <group-ocid> to manage buckets in compartment id <compartment-ocid>
     Allow group id <group-ocid> to manage objects in compartment id <compartment-ocid>
     Allow group id <group-ocid> to inspect generative-ai-model in compartment id <compartment-ocid>
     </copy>
     ```
 
-    ![Manual policy editor containing the eight workshop policy statements](images/policy-editor.png)
+    ![Manual policy editor containing the workshop policy statements](images/policy-editor.png)
 
 7. Check the group OCID and compartment OCID, then click **Create**. In the saved policy, open **Statements** and confirm that they match the values you entered.
 
-    ![Saved workshop policy statements](images/policy-created.png)
+    ![Statements tab in the saved workshop policy](images/policy-created.png)
 
 8. Users added to the group should sign in again before continuing. If their Cloud Shell session was already open, restart it from **Actions** to apply the Public Network grant.
 
@@ -282,6 +289,8 @@ Estimated Time: 30 minutes.
     ![Successful project checks in Cloud Shell](images/project-check.png)
 
     If a check shows **✗**, follow the instruction beneath it and rerun the setup script with `--check-project`. Continue to Lab 2 when the output shows **Setup complete**.
+
+You may now **proceed to the next lab**.
 
 ## Learn More
 
