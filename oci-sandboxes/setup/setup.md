@@ -171,7 +171,7 @@ Estimated Time: 30 minutes.
 
 1. In the OCI Console header, click **Developer tools** (the terminal icon), then click **Cloud Shell**. If prompted to run the Cloud Shell tutorial, enter `N`. Wait for the command prompt. Cloud Shell runs the workshop's Python code and authenticates OCI requests as your signed-in user.
 
-    ![Cloud Shell in the Developer tools menu](images/cloud-shell-navigation.png)
+    ![Cloud Shell in the Developer tools menu](https://oracle-livelabs.github.io/common/images/console/cloud-shell.png)
 
 2. In Cloud Shell, open the **Network** menu and select **Public network**. If it already shows **Public**, continue. This provides the internet access needed to download Python packages and call OpenAI in the agent exercise.
 
