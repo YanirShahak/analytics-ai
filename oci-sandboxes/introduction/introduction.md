@@ -25,7 +25,7 @@ In this workshop, you will create and use OCI Sandboxes in three ways:
 2. **Let an agent carry out the task:** Connect an OpenAI agent to an OCI Sandbox so it can run commands and use their results to complete your request.
 3. **Call an OCI service from a sandbox:** Read an object from a private Object Storage bucket using the sandbox's resource principal, without copying user credentials into the sandbox. Grant read access to that bucket through IAM and allow its regional service endpoint on port 443. Compare the request under blocked and permitted outbound access to see why both permissions and connectivity matter.
 
-The first two exercises use the same sample analysis to compare how you control execution. The third focuses on access to OCI resources.
+Lab 2 combines model-generated code with access to Object Storage. Lab 3 uses the same sample analysis with an OpenAI agent. The optional Lab 4 exposes a sandbox application for access from your browser.
 
 ### Objectives
 
@@ -35,7 +35,6 @@ The first two exercises use the same sample analysis to compare how you control 
 * Connect an agent to a sandbox and inspect its results.
 * Choose the outbound access needed for each exercise.
 * Combine resource-principal IAM permissions with restricted outbound access to read a private Object Storage object.
-* Clean up resources at the end of each example.
 
 Estimated Workshop Time: 90 minutes, including setup.
 
@@ -47,10 +46,12 @@ Before starting, confirm that you have:
 
 * Administrator access to an OCI tenancy.
 * Access to OCI Cloud Shell and its public network.
-* Access to [OpenAI gpt-oss-120b](https://docs.oracle.com/en-us/iaas/Content/generative-ai/openai-gpt-oss-120b.htm) (`openai.gpt-oss-120b`) in on-demand mode for the OCI Responses API exercises. The Setup lab guides you through selecting a region from Oracle’s [Models by Region table](https://docs.oracle.com/en-us/iaas/Content/generative-ai/model-endpoint-regions.htm).
+* Access to [OpenAI gpt-oss-120b](https://docs.oracle.com/en-us/iaas/Content/generative-ai/openai-gpt-oss-120b.htm) (`openai.gpt-oss-120b`) in on-demand mode for the OCI Responses API exercises. The Setup lab guides you through selecting a region from Oracle's [Models by Region table](https://docs.oracle.com/en-us/iaas/Content/generative-ai/model-endpoint-regions.htm).
 * An OpenAI API project with Agents API access, model access and billing, plus permission to create the required API keys.
 
 During setup, you will create the required OCI IAM policies using the supplied statements and Console instructions.
+
+You may now **proceed to the next lab**.
 
 ## Acknowledgements
 

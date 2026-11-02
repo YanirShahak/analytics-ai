@@ -20,6 +20,10 @@ In this lab, you will compare budgeted and actual profit using sample financial 
 
 Estimated Time: 30 minutes.
 
+### Prerequisites
+
+* Complete Lab 1: Setup.
+
 ## Task 1: Prepare the sample data
 
 The sample CSV contains budgeted and actual revenue, cost of goods sold (COGS), and freight costs for Equipment, Supplies, and Services. You will ask the model to generate Python code that compares budgeted and actual profit, calculated as revenue minus COGS and freight. The code will run in a sandbox and read the CSV from Object Storage.
@@ -28,7 +32,7 @@ The sample CSV contains budgeted and actual revenue, cost of goods sold (COGS), 
 
 2. In the OCI Console, open the navigation menu and select **Storage**. Under **Object Storage & Archive Storage**, click **Buckets**.
 
-    ![Storage navigation and Buckets](images/storage-navigation.png)
+    ![Storage navigation and Buckets](https://oracle-livelabs.github.io/common/images/console/storage-buckets.png)
 
     Use the **Compartment** filter to select your workshop compartment, then click **Create bucket**.
 
@@ -84,7 +88,7 @@ Code inside a sandbox uses its resource principal to authenticate to OCI service
 
 2. In the OCI Console, open **Identity & Security → Policies**.
 
-    ![Policies in the Identity & Security menu](../setup/images/policies-menu.png)
+    ![Policies in the Identity & Security menu](https://oracle-livelabs.github.io/common/images/console/id-policies.png)
 
     Select your workshop compartment in the compartment filter and click **Create Policy**.
 
@@ -372,6 +376,8 @@ The [analysis.py](../files/sandboxes-workshop/analysis.py) script in your worksh
     Confirm that the answer identifies Equipment and Services as tied for the largest profit shortfall, at **$40,000 each**. The total shortfall should be **$84,000**. The model's wording can vary; the figures should match the execution results.
 
     ![Model response using the calculated profit shortfalls](images/analysis-answer.png)
+
+You may now **proceed to the next lab**.
 
 ## Learn More
 

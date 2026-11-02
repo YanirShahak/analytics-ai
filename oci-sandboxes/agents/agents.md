@@ -209,8 +209,6 @@ With the agent connected, you can ask it to analyze the CSV uploaded in Task 2. 
 
     When the agent finishes, the script displays **Analysis: COMPLETED**, followed by its response. If the connection is interrupted, keep `agent-state.json` and rerun the script to retrieve or resume the analysis.
 
-    ![Agent financial analysis response in Cloud Shell](images/agent-analysis.png)
-
 3. Read the response and compare its figures with the sample data. It should report **$370,000** in budgeted profit and **$286,000** in actual profit, a total shortfall of **$84,000**. **Equipment** and **Services** tie for the largest shortfall at **$40,000** each; **Supplies** accounts for the remaining **$4,000**.
 
     The script saves the response in `agent-answer.md` and the commands and execution results in `agent-items.json`. You will inspect how those results support the answer in Task 4.
@@ -251,6 +249,8 @@ To understand how the agent reached its answer, inspect the commands and outputs
     ![Saved agent answer in Cloud Shell](images/agent-answer.png)
 
 4. When you finish the workshop, revoke both workshop keys in the OpenAI platform: the API key under **API keys** and the environment key under **Agents > Environments > Keys**.
+
+You may now **proceed to the next lab**.
 
 ## Learn More
 
